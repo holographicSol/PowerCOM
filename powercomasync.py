@@ -42,15 +42,16 @@ async def power_com(aioserial_instance: aioserial.AioSerial, tags: list):
 async def power_com_entrypoint(chunks: list, **kwargs) -> list:
     """ pass a bag of tags to each instance of power_com """
     tags = kwargs.get('tags')
+    # print('chunks:', chunks)
     try:
-        return [await power_com(aioserial.AioSerial(port=item, baudrate=115200), tags=tags) for item in chunks]
+        return [await power_com(aioserial.AioSerial(port=item, baudrate=115200, timeout=1), tags=tags) for item in chunks]  # todo
     except Exception as e:  # handle me!
         pass
 
 
 async def main(_chunks: list, _multiproc_dict: dict):
     """ create multiple processes in range of com ports """
-    async with aiomultiprocess.Pool() as pool:
+    async with aiomultiprocess.Pool(processes=20, maxtasksperchild=-1, childconcurrency=-1, queuecount=-1) as pool:
         results = await pool.map(power_com_entrypoint, _chunks, _multiproc_dict)
     return results
 
@@ -61,8 +62,8 @@ if __name__ == '__main__':
         multiprocessing.freeze_support()
 
     # initial data (ideally passed in through somewhere)
-    _com_min = 0
-    _com_max = 255
+    _com_min = 1
+    _com_max = 20
     _tags = ['$SATCOM', '$GNGGA', '$SNS']
     _multiproc_dict = {'tags': _tags}
 
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     coms = []
     for i in range(_com_min, _com_max):
         coms.append('COM' + str(i))
-        
+
     # chunk simple data
     _chunks = handler_chunk.chunk_data(data=coms, chunk_size=1)
 
