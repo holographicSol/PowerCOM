@@ -1,5 +1,5 @@
 """
-PowerCom. A COM port scanner (soon to be asynchronous and multi-processed) Written by Benjamin Jack Cullen
+PowerCom. A COM port scanner - Written by Benjamin Jack Cullen
 
 I need to read data from COM ports with as little configuration as possible for reusability across other projects and
 so to avoid hardcoded COM ports, baud rates, etc. So this experimental.
@@ -43,7 +43,7 @@ async def power_com_entrypoint(chunks: list, **kwargs) -> list:
     """ pass a bag of tags to each instance of power_com """
     tags = kwargs.get('tags')
     try:
-        return await power_com(aioserial.AioSerial(port=chunks[0], baudrate=115200, timeout=1), tags=tags)  # todo
+        return await power_com(aioserial.AioSerial(port=chunks[0], baudrate=115200, timeout=1), tags=tags)  # todo tune
     except Exception as e:  # handle me!
         pass
 
