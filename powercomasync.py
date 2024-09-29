@@ -39,6 +39,8 @@ async def power_com_entrypoint(chunks: list, **kwargs) -> list:
     """ pass a bag of tags to each instance of power_com """
     tags = kwargs.get('tags')
     try:
+        """ the below line is now a remaining performance issue, not the function contents of power_com
+        (comment out contents of power_com function to observe) """
         return await power_com(aioserial.AioSerial(port=chunks[0], baudrate=115200, timeout=1), tags=tags)  # todo tune
     except Exception as e:  # handle me!
         pass
