@@ -2,9 +2,9 @@
 PowerCom. A COM port scanner (soon to be asynchronous and multi-processed) Written by Benjamin Jack Cullen
 
 I need to read data from COM ports with as little configuration as possible for reusability across other projects and
-so to avoid hardcoded COM ports, baud rates.
+so to avoid hardcoded COM ports, baud rates, etc. So this experimental.
 
-Early stages. This can still be faster.
+Early stages. This can still be faster. Requires a modified aiomultiprocess to accept the multiproc_dict.
 
 """
 
@@ -26,7 +26,7 @@ async def power_com(aioserial_instance: aioserial.AioSerial, tags: list):
     (can retrieve multiple differently tagged sentences per port) """
     results = []
     found_tags = []
-    for i_try_to_get_a_good_read in range(0, 10):
+    for i_try_to_get_a_good_read in range(0, 50):
         at_most_certain_size_of_bytes_read: bytes = await aioserial_instance.read_until_async(aioserial.LF, None)
         if at_most_certain_size_of_bytes_read:
             at_most_certain_size_of_bytes_read = at_most_certain_size_of_bytes_read.decode(encoding='utf-8')
@@ -60,18 +60,20 @@ if __name__ == '__main__':
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
 
+    # initial data (ideally passed in through somewhere)
+    _com_min = 0
+    _com_max = 255
+    _tags = ['$SATCOM', '$GNGGA', '$SNS']
+    _multiproc_dict = {'tags': _tags}
+
     # create simple data
     t0 = time.time()
     coms = []
-    for i in range(1, 255):
+    for i in range(_com_min, _com_max):
         coms.append('COM' + str(i))
-
+        
     # chunk simple data
     _chunks = handler_chunk.chunk_data(data=coms, chunk_size=1)
-
-    # create a dictionary to pass to each process (master dict would be better)
-    _tags = ['$SATCOM', '$GNGGA', '$SNS']
-    _multiproc_dict = {'tags': _tags}
 
     # let it rip!
     print('\nrunning processes:')
