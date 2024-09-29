@@ -1,7 +1,8 @@
 """
 COM Scan. A COM port scanner (soon to be asynchronous and multi-processed) Written by Benjamin Jack Cullen
 
-I need to read data from COM ports with as little configuration as possible for reusability across other projects.
+I need to read data from COM ports with as little configuration as possible for reusability across other projects and
+so to avoid hardcoded COM ports, baud rates.
 
 Early stages. This working solution will have to be asynchronous and multi-processed for performance reasons.
 
