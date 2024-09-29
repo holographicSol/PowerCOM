@@ -9,7 +9,6 @@ Early stages. This can still be faster.
 """
 
 import sys
-import serial
 import asyncio
 import aioserial
 import multiprocessing
