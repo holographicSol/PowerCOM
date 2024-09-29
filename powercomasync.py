@@ -16,10 +16,6 @@ import aiomultiprocess
 import handler_chunk
 import time
 
-baud_rates = [
-    115200
-]
-
 
 async def power_com(aioserial_instance: aioserial.AioSerial, tags: list):
     """ discover sentence tag(s) on a COM port and return discovered sentence(s).
